@@ -1,0 +1,28 @@
+# 使用指定的基座镜像
+FROM nvcr.io/nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+
+# 更新和升级系统包
+RUN apt update && apt upgrade -y
+
+# 安装所需的依赖
+RUN apt install -y --no-install-recommends --no-install-suggests \
+    cmake \
+    git \
+    unzip \
+    wget
+
+# 克隆仓库并切换到仓库目录
+RUN git clone --recursive https://github.com/MrNeRF/gaussian-splatting-cuda /gaussian-splatting-cuda
+WORKDIR /gaussian-splatting-cuda
+
+# 下载并解压libtorch
+RUN wget https://download.pytorch.org/libtorch/cu118/libtorch-cxx11-abi-shared-with-deps-2.0.1%2Bcu118.zip \
+    && unzip libtorch-cxx11-abi-shared-with-deps-2.0.1+cu118.zip -d external/ \
+    && rm libtorch-cxx11-abi-shared-with-deps-2.0.1+cu118.zip
+
+# 构建项目
+RUN cmake -B build -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build build -- -j
+
+# 设置工作目录为构建输出目录
+WORKDIR /gaussian-splatting-cuda/build
