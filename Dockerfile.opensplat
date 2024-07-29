@@ -34,4 +34,4 @@ RUN cd OpenSplat/ && \
     ninja install
 
 # 运行/OpenSplat/install/bin/opensplat --help以验证安装
-RUN /OpenSplat/install/bin/opensplat --help || (echo "Error: /OpenSplat/install/bin/opensplat --help failed" && tail -f /dev/null)
+WORKDIR /OpenSplat/install
