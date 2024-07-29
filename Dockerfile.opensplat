@@ -12,14 +12,21 @@ RUN apt install -y --no-install-recommends --no-install-suggests \
     unzip \
     wget
 
-# 克隆OpenSplat仓库，下载libtorch并解压，设置环境变量，创建并进入build目录，运行cmake、ninja和ninja install
-RUN git clone https://github.com/pierotofy/OpenSplat.git && \
-    cd OpenSplat/ && \
+# 克隆OpenSplat仓库
+RUN git clone https://github.com/pierotofy/OpenSplat.git
+
+# 下载libtorch并解压
+RUN cd OpenSplat/ && \
     wget --no-check-certificate -nv https://download.pytorch.org/libtorch/cu118/libtorch-cxx11-abi-shared-with-deps-2.4.0%2Bcu118.zip -O libtorch.zip && \
     unzip -q libtorch.zip -d . && \
-    rm ./libtorch.zip && \
-    export Torch_DIR=$(pwd)/libtorch/share/cmake/Torch/ && \
-    export LD_LIBRARY_PATH=$(pwd)/libtorch/lib:$LD_LIBRARY_PATH && \
+    rm libtorch.zip
+
+# 设置环境变量并创建build目录
+ENV Torch_DIR=/OpenSplat/libtorch/share/cmake/Torch/
+ENV LD_LIBRARY_PATH=/OpenSplat/libtorch/lib:$LD_LIBRARY_PATH
+
+# 进入build目录，运行cmake和ninja
+RUN cd OpenSplat/ && \
     mkdir build && \
     cd build && \
     cmake -GNinja -DCMAKE_PREFIX_PATH=../libtorch/ -DCMAKE_INSTALL_PREFIX=../install .. && \
