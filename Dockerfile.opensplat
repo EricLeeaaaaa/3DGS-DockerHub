@@ -33,5 +33,4 @@ RUN cd OpenSplat/ && \
     ninja && \
     ninja install
 
-# 运行/OpenSplat/install/bin/opensplat --help以验证安装
 WORKDIR /OpenSplat/install
