@@ -4,12 +4,18 @@ FROM nvcr.io/nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 # 更新和升级系统包
 RUN apt update && apt upgrade -y
 
+# 安装 software-properties-common 并添加 kitware/cmake PPA
+RUN apt install -y --no-install-recommends --no-install-suggests software-properties-common \
+    && add-apt-repository ppa:kitware/cmake \
+    && apt update
+
 # 安装所需的依赖
 RUN apt install -y --no-install-recommends --no-install-suggests \
     cmake \
     git \
     unzip \
-    wget
+    wget \
+    libtbb-dev
 
 # 克隆仓库并切换到仓库目录
 RUN git clone --recursive https://github.com/MrNeRF/gaussian-splatting-cuda /gaussian-splatting-cuda
